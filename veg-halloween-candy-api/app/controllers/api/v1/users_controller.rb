@@ -1,4 +1,9 @@
 class Api::V1::UsersController < ApplicationController
-  def show
+  def create
+
+  end
+
+  def login
+
   end
 end
