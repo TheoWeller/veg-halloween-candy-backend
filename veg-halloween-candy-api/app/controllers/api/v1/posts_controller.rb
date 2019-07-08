@@ -1,5 +1,6 @@
 class Api::V1::PostsController < ApplicationController
   def index
+    byebug
     render json: Post.all
   end
 
