@@ -29,7 +29,7 @@ class Api::V1::UsersController < ApplicationController
     if @user
       render json: {
         status: "success",
-        data: @token,
+        data: issue_token({id: @user.id}),
         current_user: {username: @user.username, id: @user.id},
         posts: @user.posts
       }
