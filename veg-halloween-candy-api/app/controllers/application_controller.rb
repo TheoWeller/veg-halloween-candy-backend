@@ -1,6 +1,10 @@
 require 'jwt'
 class ApplicationController < ActionController::API
 
+  def current_user
+      @user ||= User.find_by(id: id_from_token)
+  end
+
   def issue_token(payload)
     JWT.encode(payload, ENV["SECRET_KEY"], 'HS256')
   end
