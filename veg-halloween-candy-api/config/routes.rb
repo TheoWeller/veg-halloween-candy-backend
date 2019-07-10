@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       #USERS
       post '/signup', to: 'users#create'
       post '/login', to: 'users#login'
+      post '/auto_login', to: 'users#auto_login'
     end
   end
 end
