@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_155252) do
+ActiveRecord::Schema.define(version: 2019_07_11_164739) do
 
   create_table "posts", force: :cascade do |t|
     t.string "title"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2019_07_08_155252) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "referral_link"
+    t.boolean "draft", default: true
   end
 
   create_table "users", force: :cascade do |t|
