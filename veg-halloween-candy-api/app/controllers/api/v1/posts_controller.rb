@@ -12,6 +12,10 @@ class Api::V1::PostsController < ApplicationController
 
   end
 
+  def save_draft
+
+  end
+
   def create
 
   end
