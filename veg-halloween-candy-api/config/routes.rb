@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       post '/posts/create', to: 'posts#create'
       post '/posts/update', to: 'posts#update'
       post '/posts/delete', to: 'posts#delete'
-      post '/save', to: 'posts#save_draft'
+      post '/posts/save', to: 'posts#save_draft'
 
       #USERS
       post '/signup', to: 'users#create'
