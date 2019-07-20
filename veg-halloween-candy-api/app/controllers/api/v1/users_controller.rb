@@ -2,10 +2,22 @@ require 'bcrypt'
 
 class Api::V1::UsersController < ApplicationController
   def create
-    @user = User.new(username: params["username"], email: params["email"])
-    @user.password = params["password"]
+    @user = User.new(username: params["email"]["username"], email: params["email"]["email"])
+    @user.password = params["email"]["password"]
     @user.save!
-    render json: {status: "success"}
+    @token = issue_token({id: @user.id})
+
+    if @user && @token
+      render json: {
+        status: "success",
+        current_user: {username: @user.username, id: @user.id},
+        token: @token
+      }
+    else
+      render json: {
+        status: "failed to create new user"
+      }
+    end
   end
 
   def login
@@ -29,7 +41,7 @@ class Api::V1::UsersController < ApplicationController
     if @user
       render json: {
         status: "success",
-        data: issue_token({id: @user.id}),
+        token: issue_token({id: @user.id}),
         current_user: {username: @user.username, id: @user.id},
         posts: @user.posts
       }
