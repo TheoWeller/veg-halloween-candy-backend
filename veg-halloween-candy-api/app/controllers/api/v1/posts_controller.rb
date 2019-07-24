@@ -16,18 +16,18 @@ class Api::V1::PostsController < ApplicationController
     @user = User.find_by(id: decode_token["id"])
       if @user
         @post = Post.new(
-          title: params["title"],
-          content_body: params["contentBody"],
-          image_url_1: params["imgUrl1"],
-          image_url_2: params["imgUrl2"],
-          candy_name: params["candyType"],
-          referral_link: params["referralLink"],
-          user_id: params["userId"]
+          title: params["payload"]["title"],
+          content_body: params["payload"]["contentBody"],
+          image_url_1: params["payload"]["imgUrl1"],
+          image_url_2: params["payload"]["imgUrl2"],
+          candy_name: params["payload"]["candyType"],
+          referral_link: params["payload"]["referralLink"],
+          user_id: @user.id
         )
           if @post
             @post.draft = true
             @post.save
-            render json: {status: "success"}
+            render json: {status: "saved", payload: shape_create_post_data}
           else
             render json: {error: "Missing title."}
           end
