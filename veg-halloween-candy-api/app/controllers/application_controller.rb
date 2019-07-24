@@ -27,4 +27,12 @@ class ApplicationController < ActionController::API
       @decoded["id"]
     end
   end
+
+  def shape_create_post_data
+    @shapedData = @post.attributes
+    @shapedData.delete("user_id")
+    @shapedData.delete("created_at")
+    @shapedData.delete("updated_at")
+    @shapedData
+  end
 end
