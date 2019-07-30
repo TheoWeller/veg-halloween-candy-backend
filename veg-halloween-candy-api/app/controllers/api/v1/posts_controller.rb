@@ -4,7 +4,21 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def update
-
+    @post = Post.find_by(id: params["payload"]["id"])
+    @post.update(
+      title: params["payload"]["title"],
+      content_body: params["payload"]["content_body"],
+      image_url_1: params["payload"]["image_url_1"],
+      image_url_2: params["payload"]["image_url_2"],
+      referral_link: params["payload"]["referral_link"]
+    )
+    if @post
+      @post.draft = false
+      @post.save
+      render json: {status: "saved", payload: shape_create_post_data}
+    else
+      render json: {error: @post.errors.messages}
+    end
   end
 
   def delete
@@ -18,16 +32,15 @@ class Api::V1::PostsController < ApplicationController
         @post = Post.new(
           title: params["payload"]["title"],
           content_body: params["payload"]["content_body"],
-          image_url_1: params["payload"]["img_url_1"],
-          image_url_2: params["payload"]["img_url_2"],
-          candy_name: params["payload"]["candyType"],
-          referral_link: params["payload"]["referralLink"],
+          image_url_1: params["payload"]["image_url_1"],
+          image_url_2: params["payload"]["image_url_2"],
+          referral_link: params["payload"]["referral_link"],
           user_id: @user.id
         )
           if @post
             @post.draft = true
             @post.save
-            render json: {status: "saved", payload: shape_create_post_data}
+            render json: {status: "edited", payload: shape_create_post_data}
           else
             render json: {error: "Missing title."}
           end
@@ -44,10 +57,9 @@ class Api::V1::PostsController < ApplicationController
       @post = Post.new(
         title: params["payload"]["title"],
         content_body: params["payload"]["content_body"],
-        image_url_1: params["payload"]["img_url_1"],
-        image_url_2: params["payload"]["img_url_2"],
-        candy_name: params["payload"]["candyType"],
-        referral_link: params["payload"]["referralLink"],
+        image_url_1: params["payload"]["image_url_1"],
+        image_url_2: params["payload"]["image_url_2"],
+        referral_link: params["payload"]["referral_link"],
         user_id: @user.id
       )
         if @post

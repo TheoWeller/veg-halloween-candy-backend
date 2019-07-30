@@ -4,7 +4,7 @@ Rails.application.routes.draw do
       #POSTS
       get '/posts', to: 'posts#index'
       post '/posts/create', to: 'posts#create'
-      post '/posts/update', to: 'posts#update'
+      post '/posts/edit', to: 'posts#update'
       post '/posts/delete', to: 'posts#delete'
       post '/posts/save', to: 'posts#save_draft'
 
