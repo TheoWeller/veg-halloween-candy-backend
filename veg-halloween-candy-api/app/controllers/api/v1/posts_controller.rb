@@ -17,9 +17,9 @@ class Api::V1::PostsController < ApplicationController
       if @user
         @post = Post.new(
           title: params["payload"]["title"],
-          content_body: params["payload"]["contentBody"],
-          image_url_1: params["payload"]["imgUrl1"],
-          image_url_2: params["payload"]["imgUrl2"],
+          content_body: params["payload"]["content_body"],
+          image_url_1: params["payload"]["img_url_1"],
+          image_url_2: params["payload"]["img_url_2"],
           candy_name: params["payload"]["candyType"],
           referral_link: params["payload"]["referralLink"],
           user_id: @user.id
@@ -40,12 +40,13 @@ class Api::V1::PostsController < ApplicationController
   def create
     @token = request.headers["Authenticate"]
     @user = User.find_by(id: decode_token["id"])
+    byebug
     if @user
       @post = Post.new(
         title: params["payload"]["title"],
-        content_body: params["payload"]["contentBody"],
-        image_url_1: params["payload"]["imgUrl1"],
-        image_url_2: params["payload"]["imgUrl2"],
+        content_body: params["payload"]["content_body"],
+        image_url_1: params["payload"]["img_url_1"],
+        image_url_2: params["payload"]["img_url_2"],
         candy_name: params["payload"]["candyType"],
         referral_link: params["payload"]["referralLink"],
         user_id: @user.id
