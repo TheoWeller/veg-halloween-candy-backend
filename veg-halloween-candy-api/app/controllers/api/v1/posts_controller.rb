@@ -40,7 +40,6 @@ class Api::V1::PostsController < ApplicationController
   def create
     @token = request.headers["Authenticate"]
     @user = User.find_by(id: decode_token["id"])
-    byebug
     if @user
       @post = Post.new(
         title: params["payload"]["title"],
