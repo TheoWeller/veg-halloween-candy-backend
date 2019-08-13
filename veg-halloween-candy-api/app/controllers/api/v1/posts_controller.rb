@@ -4,6 +4,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def update
+    byebug
     @post = Post.find_by(id: params["payload"]["id"])
     @post.update(
       title: params["payload"]["title"],
