@@ -10,7 +10,7 @@ class Api::V1::UsersController < ApplicationController
     if @user && @token
       render json: {
         status: "success",
-        current_user: {username: @user.username, id: @user.id},
+        current_user: {username: @user.username, id: @user.id, admin: @user.admin},
         token: @token
       }
     else
@@ -26,7 +26,7 @@ class Api::V1::UsersController < ApplicationController
       @token = issue_token({id: @user.id})
       render json: {
           status: "success",
-          current_user: {username: @user.username, id: @user.id},
+          current_user: {username: @user.username, id: @user.id, admin: @user.admin},
           token: @token,
           posts: @user.posts
         }
@@ -42,7 +42,7 @@ class Api::V1::UsersController < ApplicationController
       render json: {
         status: "success",
         token: issue_token({id: @user.id}),
-        current_user: {username: @user.username, id: @user.id},
+        current_user: {username: @user.username, id: @user.id, admin: @user.admin},
         posts: @user.posts
       }
     else

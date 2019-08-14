@@ -23,7 +23,11 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def delete
-
+    @post = Post.find_by(id: params["payload"]["postId"])
+    @post.destroy!
+    if !Post.exists?(@post.id)
+      render json: {status: "deleted", id: @post.id}
+    end
   end
 
   def save_draft
