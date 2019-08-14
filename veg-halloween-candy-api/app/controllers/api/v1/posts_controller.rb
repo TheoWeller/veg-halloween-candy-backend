@@ -4,7 +4,6 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def update
-    byebug
     @post = Post.find_by(id: params["payload"]["id"])
     @post.update(
       title: params["payload"]["title"],
@@ -16,7 +15,7 @@ class Api::V1::PostsController < ApplicationController
     if @post
       @post.draft = false
       @post.save
-      render json: {status: "saved", payload: shape_create_post_data}
+      render json: {status: "edited", payload: shape_create_post_data}
     else
       render json: {error: @post.errors.messages}
     end
