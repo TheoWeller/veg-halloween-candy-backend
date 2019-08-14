@@ -45,7 +45,7 @@ class Api::V1::PostsController < ApplicationController
           if @post
             @post.draft = true
             @post.save
-            render json: {status: "edited", payload: shape_create_post_data}
+            render json: {status: "saved", payload: shape_create_post_data}
           else
             render json: {error: "Missing title."}
           end
