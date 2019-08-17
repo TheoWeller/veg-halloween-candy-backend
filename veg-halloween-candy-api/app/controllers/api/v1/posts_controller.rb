@@ -14,7 +14,9 @@ class Api::V1::PostsController < ApplicationController
     )
     if @post
       @post.draft = false
+      @post.rank != params["payload"]["rank"] && params["payload"]["rank"] != "" && @post.rank = params["payload"]["rank"]
       @post.save
+      #ADJUST ALL OTHER POSTS
       render json: {status: "edited", payload: shape_create_post_data}
     else
       render json: {error: @post.errors.messages}
@@ -30,6 +32,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def save_draft
+    byebug
     @token = request.headers["Authenticate"]
     @user = User.find_by(id: decode_token["id"])
       if @user
@@ -68,6 +71,8 @@ class Api::V1::PostsController < ApplicationController
       )
         if @post
           @post.draft = false
+          params["payload"]["rank"] != "" && @post.rank = params["payload"]["rank"]
+          adjustPostRankings(true)
           @post.save
           render json: {status: "success", payload: shape_create_post_data}
         end

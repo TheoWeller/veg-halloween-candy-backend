@@ -28,6 +28,21 @@ class ApplicationController < ActionController::API
     end
   end
 
+  def adjustPostRankings(increment)
+    puts "POSTS--------------------------------------: #{@user.posts.length}"
+    counter = 0
+    puts "LOOP COUNT--------------------------------------: #{counter}"
+    @user.posts.each do |p|
+      counter + 1
+      if p.rank >= @post.rank && p.rank != 0
+        puts "BEFORE--------------------------------------:#{p.rank}"
+        increment ? p.rank = p.rank + 1 : p.rank = p.rank - 1
+        puts "AFTER--------------------------------------:: #{p.rank}"
+        p.save
+      end
+    end
+  end
+
   def shape_create_post_data
     @shapedData = @post.attributes
     @shapedData.delete("user_id")
