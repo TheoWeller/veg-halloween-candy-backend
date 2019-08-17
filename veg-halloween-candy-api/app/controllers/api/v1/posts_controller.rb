@@ -5,6 +5,7 @@ class Api::V1::PostsController < ApplicationController
 
   def update
     @post = Post.find_by(id: params["payload"]["id"])
+    @user = User.find_by(id: @post.user_id)
     @post.update(
       title: params["payload"]["title"],
       content_body: params["payload"]["content_body"],
@@ -14,9 +15,7 @@ class Api::V1::PostsController < ApplicationController
     )
     if @post
       @post.draft = false
-      @post.rank != params["payload"]["rank"] && params["payload"]["rank"] != "" && @post.rank = params["payload"]["rank"]
-      @post.save
-      #ADJUST ALL OTHER POSTS
+      adjustPostRankings("update")
       render json: {status: "edited", payload: shape_create_post_data}
     else
       render json: {error: @post.errors.messages}
@@ -25,6 +24,7 @@ class Api::V1::PostsController < ApplicationController
 
   def delete
     @post = Post.find_by(id: params["payload"]["postId"])
+    adjustPostRankings("delete")
     @post.destroy!
     if !Post.exists?(@post.id)
       render json: {status: "deleted", id: @post.id}
@@ -32,7 +32,6 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def save_draft
-    byebug
     @token = request.headers["Authenticate"]
     @user = User.find_by(id: decode_token["id"])
       if @user
@@ -46,6 +45,7 @@ class Api::V1::PostsController < ApplicationController
         )
           if @post
             @post.draft = true
+            @post.rank = 0
             @post.save
             render json: {status: "saved", payload: shape_create_post_data}
           else
@@ -71,8 +71,7 @@ class Api::V1::PostsController < ApplicationController
       )
         if @post
           @post.draft = false
-          params["payload"]["rank"] != "" && @post.rank = params["payload"]["rank"]
-          adjustPostRankings(true)
+          params["payload"]["rank"] != "" && adjustPostRankings("create")
           @post.save
           render json: {status: "success", payload: shape_create_post_data}
         end

@@ -28,21 +28,6 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def adjustPostRankings(increment)
-    puts "POSTS--------------------------------------: #{@user.posts.length}"
-    counter = 0
-    puts "LOOP COUNT--------------------------------------: #{counter}"
-    @user.posts.each do |p|
-      counter + 1
-      if p.rank >= @post.rank && p.rank != 0
-        puts "BEFORE--------------------------------------:#{p.rank}"
-        increment ? p.rank = p.rank + 1 : p.rank = p.rank - 1
-        puts "AFTER--------------------------------------:: #{p.rank}"
-        p.save
-      end
-    end
-  end
-
   def shape_create_post_data
     @shapedData = @post.attributes
     @shapedData.delete("user_id")
@@ -50,4 +35,39 @@ class ApplicationController < ActionController::API
     @shapedData.delete("updated_at")
     @shapedData
   end
+#=====POST RANKING HANDLER AND HELPERS=====
+def adjustPostRankings(type)
+  #all sorted posts
+  @sorted_posts = Post.all.sort_by{ |p| p.rank }
+  #insert placeholder to represent rankings via index
+  @sorted_posts.insert(0, "X")
+
+  case type
+    when "create"
+      @sorted_posts.insert(params["payload"]["rank"].to_i, @post)
+      reassign_and_save_rankings
+    when "update"
+      @sorted_posts.slice!(@post.rank)
+      byebug
+      @sorted_posts.insert(params["payload"]["rank"].to_i, @post)
+      reassign_and_save_rankings
+    when "delete"
+      @sorted_posts.slice!(@post.rank)
+      reassign_and_save_rankings
+  end
+end
+
+  def reassign_and_save_rankings
+    @sorted_posts.each_with_index do |post, index|
+      if post === "X"
+        nil
+      else
+      post.rank = index
+      post.save
+      end
+    end
+  end
+
+
+
 end

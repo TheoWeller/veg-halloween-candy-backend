@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_16_223022) do
+ActiveRecord::Schema.define(version: 2019_08_17_165947) do
 
   create_table "posts", force: :cascade do |t|
     t.string "title"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_08_16_223022) do
     t.string "referral_link"
     t.boolean "draft", default: true
     t.integer "rank", default: 1
+    t.index ["rank"], name: "index_posts_on_rank"
   end
 
   create_table "users", force: :cascade do |t|
