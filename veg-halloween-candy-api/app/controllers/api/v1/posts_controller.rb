@@ -16,7 +16,7 @@ class Api::V1::PostsController < ApplicationController
     if @post
       @post.draft = false
       adjustPostRankings("update")
-      render json: {status: "edited", payload: shape_create_post_data}
+      render json: {status: "edited", payload: @user.posts}
     else
       render json: {error: @post.errors.messages}
     end
@@ -73,7 +73,7 @@ class Api::V1::PostsController < ApplicationController
           @post.draft = false
           params["payload"]["rank"] != "" && adjustPostRankings("create")
           @post.save
-          render json: {status: "success", payload: shape_create_post_data}
+          render json: {status: "success", payload: @user.posts}
         end
     else
       render json: {error: "Not authorized"}

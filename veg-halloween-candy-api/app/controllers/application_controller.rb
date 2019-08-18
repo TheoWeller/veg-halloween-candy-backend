@@ -48,7 +48,6 @@ def adjustPostRankings(type)
       reassign_and_save_rankings
     when "update"
       @sorted_posts.slice!(@post.rank)
-      byebug
       @sorted_posts.insert(params["payload"]["rank"].to_i, @post)
       reassign_and_save_rankings
     when "delete"
