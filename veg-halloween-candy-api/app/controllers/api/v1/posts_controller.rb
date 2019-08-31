@@ -5,6 +5,7 @@ class Api::V1::PostsController < ApplicationController
 
   def update
     @post = Post.find_by(id: params["payload"]["id"])
+    @user = User.find_by(id: @post.user_id)
     @post.update(
       title: params["payload"]["title"],
       content_body: params["payload"]["content_body"],
@@ -14,8 +15,8 @@ class Api::V1::PostsController < ApplicationController
     )
     if @post
       @post.draft = false
-      @post.save
-      render json: {status: "edited", payload: shape_create_post_data}
+      adjustPostRankings("update")
+      render json: {status: "edited", payload: @user.posts}
     else
       render json: {error: @post.errors.messages}
     end
@@ -23,9 +24,12 @@ class Api::V1::PostsController < ApplicationController
 
   def delete
     @post = Post.find_by(id: params["payload"]["postId"])
+    @user = User.find_by(id: params["payload"]["userId"])
+    adjustPostRankings("delete")
     @post.destroy!
+    @all_posts = @user.posts
     if !Post.exists?(@post.id)
-      render json: {status: "deleted", id: @post.id}
+      render json: {status: "deleted", payload: @all_posts}
     end
   end
 
@@ -43,6 +47,7 @@ class Api::V1::PostsController < ApplicationController
         )
           if @post
             @post.draft = true
+            @post.rank = 0
             @post.save
             render json: {status: "saved", payload: shape_create_post_data}
           else
@@ -68,8 +73,11 @@ class Api::V1::PostsController < ApplicationController
       )
         if @post
           @post.draft = false
+          #if post has no rank set it deafults to 1 -
+          params["payload"]["rank"] == "" && params["payload"]["rank"] = @post.rank.to_s
+          adjustPostRankings("create")
           @post.save
-          render json: {status: "success", payload: shape_create_post_data}
+          render json: {status: "success", payload: @user.posts}
         end
     else
       render json: {error: "Not authorized"}
